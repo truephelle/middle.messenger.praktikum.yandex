@@ -23,7 +23,8 @@ function route() {
       app.appendChild(parser.parseFromString(return500(), "text/html").body.firstChild);
       break;
     case '/':
-      window.location.pathname = '/authorize';
+      renderDefaultContent();
+      break;
     case '/authorize':
       app.appendChild(parser.parseFromString(returnAuthorize(), "text/html").body.firstChild);
       break;
@@ -39,6 +40,38 @@ function route() {
     default:
       app.appendChild(parser.parseFromString(return404(), "text/html").body.firstChild);
   }
+}
+
+// Function to render default content using DOM methods only
+function renderDefaultContent() {
+  const container = document.createElement('div');
+  container.className = 'main-page';
+  
+  const heading = document.createElement('h1');
+  heading.textContent = 'Доступные страницы';
+  container.appendChild(heading);
+  
+  const links = [
+    { href: '/authorize', text: 'Авторизация' },
+    { href: '/registrate', text: 'Регистрация' },
+    { href: '/settings', text: 'Настройки' },
+    { href: '/chat', text: 'Чат' },
+    { href: '/404', text: 'Ошибка 404' },
+    { href: '/500', text: 'Ошибка 500' }
+  ];
+  
+  const list = document.createElement('ul');
+  links.forEach(link => {
+    const listItem = document.createElement('li');
+    const anchor = document.createElement('a');
+    anchor.href = link.href;
+    anchor.textContent = link.text;
+    listItem.appendChild(anchor);
+    list.appendChild(listItem);
+  });
+  
+  container.appendChild(list);
+  app.appendChild(container);
 }
 
 route();
