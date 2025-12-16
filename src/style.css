@@ -36,8 +36,14 @@ h1 {
 }
 
 h2 {
-  font-size: 4em;
+  font-size: 2em;
   line-height: 1.1;
+  margin-top: 0;
+}
+
+h3 {
+  font-size: 1.2em;
+  margin-bottom: 0.5em;
 }
 
 #app {
@@ -57,6 +63,8 @@ button {
   background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
+  width: 100%;
+  margin-top: 10px;
 }
 button:hover {
   border-color: #646cff;
@@ -65,6 +73,64 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.auth-form {
+  background-color: white;
+  color: #213547;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: left;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.form-group input[type="file"] {
+  padding: 0.5rem 0;
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.form-footer a {
+  color: #646cff;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
 }
 
 @media (prefers-color-scheme: light) {

@@ -1,6 +1,6 @@
 import Handlebars from "handlebars";
-import errorTemplate from "./error.hbs";
+import errorTemplate from "./error.hbs?raw";
 
-export function render404() {
+export function return404() {
   return Handlebars.compile(errorTemplate)({httpCode: 404, message: "Такой страницы не существует"});
 }
