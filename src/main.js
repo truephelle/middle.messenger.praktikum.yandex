@@ -5,6 +5,7 @@ import { returnAuthorize } from './forms/authorize.js'
 import { returnRegistrate } from './forms/registrate.js'
 import { returnSettings } from './forms/settings.js'
 import { returnChat } from './forms/chat.js'
+import { returnListItem } from './components/listItem/listItem.js'
 
 const app = document.querySelector('#app');
 
@@ -62,11 +63,9 @@ function renderDefaultContent() {
   
   const list = document.createElement('ul');
   links.forEach(link => {
-    const listItem = document.createElement('li');
-    const anchor = document.createElement('a');
-    anchor.href = link.href;
-    anchor.textContent = link.text;
-    listItem.appendChild(anchor);
+    const parser = new DOMParser();
+    const listItemHtml = returnListItem(link);
+    const listItem = parser.parseFromString(listItemHtml, "text/html").body.firstChild;
     list.appendChild(listItem);
   });
   
