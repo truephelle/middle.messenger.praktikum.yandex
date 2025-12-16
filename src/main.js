@@ -6,6 +6,7 @@ import { returnRegistrate } from './forms/registrate.js'
 import { returnSettings } from './forms/settings.js'
 import { returnChat } from './forms/chat.js'
 import { returnListItem } from './components/listItem/listItem.js'
+import { parseHtmlString } from './utils/domUtils.js'
 
 const app = document.querySelector('#app');
 
@@ -18,28 +19,27 @@ function route() {
     app.removeChild(app.firstChild);
   }
   
-  let parser = new DOMParser();
   switch (path) {
-    case '/500':
-      app.appendChild(parser.parseFromString(return500(), "text/html").body.firstChild);
-      break;
     case '/':
       renderDefaultContent();
       break;
+    case '/chat':
+      app.appendChild(parseHtmlString(returnChat()));
+      break;
     case '/authorize':
-      app.appendChild(parser.parseFromString(returnAuthorize(), "text/html").body.firstChild);
+      app.appendChild(parseHtmlString(returnAuthorize()));
       break;
     case '/registrate':
-      app.appendChild(parser.parseFromString(returnRegistrate(), "text/html").body.firstChild);
+      app.appendChild(parseHtmlString(returnRegistrate()));
       break;
     case '/settings':
-      app.appendChild(parser.parseFromString(returnSettings(), "text/html").body.firstChild);
+      app.appendChild(parseHtmlString(returnSettings()));
       break;
-    case '/chat':
-      app.appendChild(parser.parseFromString(returnChat(), "text/html").body.firstChild);
+    case '/500':
+      app.appendChild(parseHtmlString(return500()));
       break;
     default:
-      app.appendChild(parser.parseFromString(return404(), "text/html").body.firstChild);
+      app.appendChild(parseHtmlString(return404()));
   }
 }
 
@@ -63,9 +63,8 @@ function renderDefaultContent() {
   
   const list = document.createElement('ul');
   links.forEach(link => {
-    const parser = new DOMParser();
     const listItemHtml = returnListItem(link);
-    const listItem = parser.parseFromString(listItemHtml, "text/html").body.firstChild;
+    const listItem = parseHtmlString(listItemHtml);
     list.appendChild(listItem);
   });
   
