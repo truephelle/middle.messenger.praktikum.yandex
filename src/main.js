@@ -4,6 +4,7 @@ import { return500 } from './errors/500.js'
 import { returnAuthorize } from './forms/authorize.js'
 import { returnRegistrate } from './forms/registrate.js'
 import { returnSettings } from './forms/settings.js'
+import { returnChat } from './forms/chat.js'
 
 const app = document.querySelector('#app');
 
@@ -31,6 +32,9 @@ function route() {
       break;
     case '/settings':
       app.appendChild(parser.parseFromString(returnSettings(), "text/html").body.firstChild);
+      break;
+    case '/chat':
+      app.appendChild(parser.parseFromString(returnChat(), "text/html").body.firstChild);
       break;
     default:
       app.appendChild(parser.parseFromString(return404(), "text/html").body.firstChild);
