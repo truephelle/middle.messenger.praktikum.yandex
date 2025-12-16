@@ -10,12 +10,12 @@
     "start": "vite --port 3000"
   },
   "devDependencies": {
-    "vite": "^7.2.4"
+    "vite": "^7.3.0"
   },
   "dependencies": {
     "vite-plugin-handlebars": "^2.0.0"
   },
   "engines": {
-    "node": "22"
+    "node": ">=22"
   }
 }
