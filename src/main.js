@@ -52,6 +52,8 @@ function renderDefaultContent() {
   heading.textContent = 'Доступные страницы';
   container.appendChild(heading);
   
+  const nav = document.createElement('nav');
+  
   const links = [
     { href: '/authorize', text: 'Авторизация' },
     { href: '/registrate', text: 'Регистрация' },
@@ -68,7 +70,8 @@ function renderDefaultContent() {
     list.appendChild(listItem);
   });
   
-  container.appendChild(list);
+  nav.appendChild(list);
+  container.appendChild(nav);
   app.appendChild(container);
 }
 
