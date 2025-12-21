@@ -11,7 +11,7 @@
   color: #213547;
   padding: 2rem;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgb(0 0 0 / 10%);
   width: 100%;
   max-width: 400px;
   text-align: left;
