@@ -3,38 +3,8 @@ import Handlebars from "handlebars";
 import inputTemplate from "./input.hbs?raw";
 import Block from "../../utils/block";
 import EventBus from "../../utils/eventBus";
-
-// Validation rules
-const VALIDATION_RULES = {
-  first_name: {
-    pattern: /^[A-ZА-Я][a-zA-Zа-яА-Я-]*$/,
-    message: 'Имя должно начинаться с заглавной буквы и содержать только буквы и дефис'
-  },
-  second_name: {
-    pattern: /^[A-ZА-Я][a-zA-Zа-яА-Я-]*$/,
-    message: 'Фамилия должна начинаться с заглавной буквы и содержать только буквы и дефис'
-  },
-  login: {
-    pattern: /^[a-zA-Z][a-zA-Z0-9_-]{2,19}$/,
-    message: 'Логин должен содержать от 3 до 20 символов, начинаться с буквы и может содержать буквы, цифры, дефис и подчеркивание'
-  },
-  email: {
-    pattern: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-    message: 'Некорректный email адрес'
-  },
-  password: {
-    pattern: /^(?=.*[A-Z])(?=.*\d).{8,40}$/,
-    message: 'Пароль должен содержать от 8 до 40 символов, включая хотя бы одну заглавную букву и одну цифру'
-  },
-  phone: {
-    pattern: /^\+?\d{10,15}$/,
-    message: 'Телефон должен содержать от 10 до 15 цифр и может начинаться с плюса'
-  },
-  message: {
-    pattern: /.+/,
-    message: 'Сообщение не должно быть пустым'
-  }
-};
+import globalEventBus from "../../utils/globalEventBus";
+import { VALIDATION_RULES } from "../../utils/validationUtils";
 
 interface InputProps {
   id: string;
@@ -57,6 +27,13 @@ class Input extends Block {
     // Register event listeners to prevent errors
     this.inputEventBus.on('input.validation.error', () => {});
     this.inputEventBus.on('input.validation.success', () => {});
+    
+    // Register listeners for global event bus events
+    globalEventBus.on('input.validation.error', () => {});
+    globalEventBus.on('input.validation.success', () => {});
+    globalEventBus.on('form.validation.error', () => {});
+    globalEventBus.on('form.validation.success', () => {});
+    globalEventBus.on('input.focus', () => {});
   }
 
   protected componentDidMount(): void {
@@ -74,30 +51,6 @@ class Input extends Block {
     }
   }
 
-  // Validate the input field
-  public isValid(): boolean {
-    const inputElement = this.getContent()?.querySelector('input');
-    if (!inputElement) return true;
-    
-    const value = inputElement.value;
-    const fieldName = this.props.name;
-    
-    // Check if we have a specific validation rule for this field
-    const rule = VALIDATION_RULES[fieldName as keyof typeof VALIDATION_RULES];
-    if (rule) {
-      return rule.pattern.test(value);
-    }
-    
-    // If we have a custom regex, use it
-    if (this.props.regex) {
-      return this.props.regex.test(value);
-    }
-    
-    // If no validation rule, consider it valid
-    return true;
-  }
-
-  // Validate and show error if invalid
   public validate(): boolean {
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return true;
@@ -105,40 +58,36 @@ class Input extends Block {
     const value = inputElement.value;
     const fieldName = this.props.name;
     
-    // Check if we have a specific validation rule for this field
     const rule = VALIDATION_RULES[fieldName as keyof typeof VALIDATION_RULES];
     if (rule) {
       if (!rule.pattern.test(value)) {
         this.showError(rule.message);
-        this.inputEventBus.emit('input.validation.error', { fieldName, message: rule.message });
+        globalEventBus.emit('input.validation.error', { fieldName, message: rule.message });
         return false;
       } else {
         this.clearError();
-        this.inputEventBus.emit('input.validation.success', { fieldName });
+        globalEventBus.emit('input.validation.success', { fieldName });
         return true;
       }
     }
     
-    // If we have a custom regex, use it
     if (this.props.regex) {
       if (!this.props.regex.test(value)) {
         this.showError('Invalid format');
-        this.inputEventBus.emit('input.validation.error', { fieldName, message: 'Invalid format' });
+        globalEventBus.emit('input.validation.error', { fieldName, message: 'Invalid format' });
         return false;
       } else {
         this.clearError();
-        this.inputEventBus.emit('input.validation.success', { fieldName });
+        globalEventBus.emit('input.validation.success', { fieldName });
         return true;
       }
     }
     
-    // If no validation rule, consider it valid
     this.clearError();
-    this.inputEventBus.emit('input.validation.success', { fieldName });
+    globalEventBus.emit('input.validation.success', { fieldName });
     return true;
   }
 
-  // Show error message
   private showError(message: string): void {
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return;
@@ -146,14 +95,10 @@ class Input extends Block {
     this.clearError();
     inputElement.classList.add('field-error');
     
-    const errorElement = document.createElement('div');
-    errorElement.className = 'field-error-message';
-    errorElement.textContent = message;
-    errorElement.style.color = 'red';
-    errorElement.style.fontSize = '0.8em';
-    errorElement.style.marginTop = '0.25rem';
-    
-    inputElement.parentNode?.insertBefore(errorElement, inputElement.nextSibling);
+    globalEventBus.emit('input.validation.error', {
+      fieldName: this.props.name,
+      message: message
+    });
   }
 
   // Clear error message
@@ -163,10 +108,8 @@ class Input extends Block {
     
     inputElement.classList.remove('field-error');
     
-    const nextSibling = inputElement.nextSibling as HTMLElement | null;
-    if (nextSibling && nextSibling.classList && nextSibling.classList.contains('field-error-message')) {
-      nextSibling.remove();
-    }
+    // Emit event to hide tooltip
+    globalEventBus.emit('input.focus', inputElement);
   }
 
   // Add event listener

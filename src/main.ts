@@ -18,7 +18,7 @@ import {
   attachRegistrateFormHandler,
   attachSettingsFormHandler
 } from './utils/formUtils.ts';
-import { setupFormValidation } from './utils/validationUtils.ts';
+
 
 const app = document.querySelector('#app') as HTMLElement | null;
 
@@ -71,7 +71,6 @@ function route() {
   }
 }
 
-// Function to render default content using DOM methods only
 function renderDefaultContent() {
   const container = document.createElement('div');
   container.className = 'main-page';
@@ -93,18 +92,18 @@ function renderDefaultContent() {
   
   const list = document.createElement('ul');
   links.forEach(link => {
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'button';
-    button.textContent = link.text;
-    button.addEventListener('click', (event) => {
-      event.preventDefault();
-      window.history.pushState({}, '', link.href);
-      route();
+    const buttonWrapper = document.createElement('li');
+    const button = new Button({
+      type: 'button',
+      text: link.text,
+      className: 'button',
+      onClick: () => {
+        window.location.href = link.href;
+      }
     });
-    if (list) {
-      list.appendChild(button);
-    }
+    
+    buttonWrapper.appendChild(button.getContent() as Node);
+    list.appendChild(buttonWrapper);
   });
   
   nav.appendChild(list);

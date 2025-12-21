@@ -48,11 +48,10 @@ export class HTTPTransport {
       }
 
       const xhr = new XMLHttpRequest();
-      const isGet = method === METHODS.GET;
 
       xhr.open(
         method, 
-        `${url}${queryStringify(data as Record<string, any>)}`
+        method === METHODS.GET ? `${url}${queryStringify(data as Record<string, any>)}` : url
       );
 
       Object.keys(headers).forEach(key => {
@@ -69,7 +68,7 @@ export class HTTPTransport {
       xhr.timeout = timeout;
       xhr.ontimeout = reject;
 
-      if (isGet || !data) {
+      if (method === METHODS.GET || !data) {
         xhr.send();
       } else {
         xhr.send(data as any);
