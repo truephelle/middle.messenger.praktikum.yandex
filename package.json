@@ -10,6 +10,8 @@
     "start": "vite build && vite preview --port 3000"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.50.0",
+    "@typescript-eslint/parser": "^8.50.0",
     "eslint": "^9.39.2",
     "vite": "^7.3.0"
   },
