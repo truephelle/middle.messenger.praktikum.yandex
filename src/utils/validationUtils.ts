@@ -1,4 +1,3 @@
-import EventBus from './eventBus';
 import globalEventBus from './globalEventBus';
 
 export const VALIDATION_RULES = {
@@ -59,8 +58,6 @@ export function validateForm(formData: Record<string, string>): Record<string, s
 }
 
 export function setupFormValidation(formId: string, fieldNames: string[]): HTMLFormElement | null {
-  const eventBus = new EventBus();
-  
   const form = document.getElementById(formId) as HTMLFormElement | null;
   if (!form) return null;
   

@@ -1,11 +1,11 @@
-import { setupFormValidation } from './validationUtils.ts';
-import Tooltip from '../components/tooltip/tooltip.ts';
+import { setupFormValidation } from './validationUtils';
+import Tooltip from '../components/tooltip/tooltip';
 import '../components/tooltip/tooltip.css';
 
-// Create a single instance of Tooltip for the entire application
 const tooltip = new Tooltip();
+(() => tooltip)();
 
-export function attachFormSubmitHandler(formSelector: string, handler: (data: Record<string, any>) => void): void {
+export function attachFormSubmitHandler(_formSelector: string, _handler: (data: Record<string, any>) => void): void {
   setupFormValidation('auth-form', ['login', 'password']);
 }
 

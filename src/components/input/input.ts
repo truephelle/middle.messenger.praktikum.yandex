@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-// @ts-ignore
+// @ts-expect-error TS7016: Could not find a declaration file for module
 import inputTemplate from "./input.hbs?raw";
 import Block from "../../utils/block";
 import EventBus from "../../utils/eventBus";
@@ -24,14 +24,7 @@ class Input extends Block {
     super("div", props);
     this.inputEventBus = new EventBus();
     
-    this.inputEventBus.on('input.validation.error', () => {});
-    this.inputEventBus.on('input.validation.success', () => {});
-    
-    globalEventBus.on('input.validation.error', () => {});
-    globalEventBus.on('input.validation.success', () => {});
-    globalEventBus.on('form.validation.error', () => {});
-    globalEventBus.on('form.validation.success', () => {});
-    globalEventBus.on('input.focus', () => {});
+    // Event listeners will be handled by the tooltip component
   }
 
   protected componentDidMount(): void {

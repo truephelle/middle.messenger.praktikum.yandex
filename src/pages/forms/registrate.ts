@@ -1,8 +1,8 @@
 import Handlebars from "handlebars";
-// @ts-ignore
+// @ts-expect-error TS7016: Could not find a declaration file for module
 import regTemplate from "./registrate.hbs?raw";
-import { Input } from '../../components/input/input.ts';
-import { Button } from '../../components/button/button.ts';
+import { Input } from '../../components/input/input';
+import { Button } from '../../components/button/button';
 
 export function returnRegistrate(): string {
   const firstNameInput = new Input({

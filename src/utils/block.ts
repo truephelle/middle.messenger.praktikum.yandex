@@ -81,7 +81,7 @@ class Block {
   }
 
   protected componentDidUpdate(oldProps: BlockProps, newProps: BlockProps): boolean {
-    return true;
+    return !Object.keys(oldProps).every(key => oldProps[key] === newProps[key]);
   }
 
   setProps = (nextProps: BlockProps): void => {

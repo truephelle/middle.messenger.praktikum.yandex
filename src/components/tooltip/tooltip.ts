@@ -17,19 +17,11 @@ class Tooltip {
     }
 
     private subscribeToValidationEvents(): void {
-        globalEventBus.on('input.validation.error', () => {});
-        globalEventBus.on('input.validation.success', () => {});
-        globalEventBus.on('form.validation.error', () => {});
-        globalEventBus.on('form.validation.success', () => {});
-        globalEventBus.on('form.validation.failed', () => {});
-        globalEventBus.on('form.validation.passed', () => {});
-        globalEventBus.on('input.focus', () => {});
-
         globalEventBus.on('input.validation.error', (data: { fieldName: string, message: string }) => {
             this.onInputError(data.fieldName, data.message);
         });
 
-        globalEventBus.on('input.validation.success', (data: { fieldName: string }) => {
+        globalEventBus.on('input.validation.success', (_data: { fieldName: string }) => {
             this.onHide();
         });
 
@@ -37,11 +29,19 @@ class Tooltip {
             this.onFormError(data.formId, data.fieldName, data.message);
         });
 
-        globalEventBus.on('form.validation.success', (data: { formId: string, fieldName: string }) => {
+        globalEventBus.on('form.validation.success', (_data: { formId: string, fieldName: string }) => {
             this.onHide();
         });
 
-        globalEventBus.on('input.focus', (element: HTMLInputElement) => {
+        globalEventBus.on('form.validation.failed', () => {
+            // Handle form validation failed event
+        });
+
+        globalEventBus.on('form.validation.passed', () => {
+            // Handle form validation passed event
+        });
+
+        globalEventBus.on('input.focus', (_element: HTMLInputElement) => {
             this.onHide();
         });
     }

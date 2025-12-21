@@ -1,5 +1,5 @@
 import Handlebars from "handlebars";
-// @ts-ignore
+// @ts-expect-error TS7016: Could not find a declaration file for module
 import buttonTemplate from "./button.hbs?raw";
 import Block from "../../utils/block";
 

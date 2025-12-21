@@ -4,20 +4,20 @@ import './components/button/button.css'
 import './pages/forms/forms.css'
 import './pages/forms/chat.css'
 import './pages/main.css'
-import { return404 } from './pages/errors/404.ts'
-import { return500 } from './pages/errors/500.ts'
-import { returnAuthorize } from './pages/forms/authorize.ts'
-import { returnRegistrate } from './pages/forms/registrate.ts'
-import { returnSettings } from './pages/forms/settings.ts'
-import { returnChat } from './pages/forms/chat.ts'
-import { Button } from './components/button/button.ts'
-import { renderPage } from './utils/routingUtils.ts'
+import { return404 } from './pages/errors/404'
+import { return500 } from './pages/errors/500'
+import { returnAuthorize } from './pages/forms/authorize'
+import { returnRegistrate } from './pages/forms/registrate'
+import { returnSettings } from './pages/forms/settings'
+import { returnChat } from './pages/forms/chat'
+import { Button } from './components/button/button'
+import { renderPage } from './utils/routingUtils'
 import {
   attachChatFormHandler,
   attachAuthorizeFormHandler,
   attachRegistrateFormHandler,
   attachSettingsFormHandler
-} from './utils/formUtils.ts';
+} from './utils/formUtils';
 
 const app = document.querySelector('#app') as HTMLElement | null;
 
