@@ -1,11 +1,11 @@
 import Handlebars from "handlebars";
 // @ts-ignore
 import chatTemplate from "./chat.hbs?raw";
-import { returnInput } from '../../components/input/input.ts';
-import { returnButton } from '../../components/button/button.ts';
+import { Input } from '../../components/input/input.ts';
+import { Button } from '../../components/button/button.ts';
 
 export function returnChat(): string {
-  const messageInput = returnInput({
+  const messageInput = new Input({
     id: "message-input",
     name: "message",
     label: "",
@@ -14,13 +14,13 @@ export function returnChat(): string {
     required: true
   });
   
-  const submitButton = returnButton({
+  const submitButton = new Button({
     type: "submit",
     text: "Отправить"
   });
 
   return Handlebars.compile(chatTemplate)({
-    messageInput,
-    submitButton
+    messageInput: messageInput.getContent()?.outerHTML || '',
+    submitButton: submitButton.getContent()?.outerHTML || ''
   });
 }

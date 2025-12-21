@@ -1,11 +1,11 @@
 import Handlebars from "handlebars";
 // @ts-ignore
 import regTemplate from "./registrate.hbs?raw";
-import { returnInput } from '../../components/input/input.ts';
-import { returnButton } from '../../components/button/button.ts';
+import { Input } from '../../components/input/input.ts';
+import { Button } from '../../components/button/button.ts';
 
 export function returnRegistrate(): string {
-  const firstNameInput = returnInput({
+  const firstNameInput = new Input({
     id: "first_name",
     name: "first_name",
     label: "Имя",
@@ -13,7 +13,7 @@ export function returnRegistrate(): string {
     required: true
   });
   
-  const secondNameInput = returnInput({
+  const secondNameInput = new Input({
     id: "second_name",
     name: "second_name",
     label: "Фамилия",
@@ -21,7 +21,7 @@ export function returnRegistrate(): string {
     required: true
   });
   
-  const loginInput = returnInput({
+  const loginInput = new Input({
     id: "login",
     name: "login",
     label: "Логин",
@@ -29,7 +29,7 @@ export function returnRegistrate(): string {
     required: true
   });
   
-  const emailInput = returnInput({
+  const emailInput = new Input({
     id: "email",
     name: "email",
     label: "Email",
@@ -37,7 +37,7 @@ export function returnRegistrate(): string {
     required: true
   });
   
-  const passwordInput = returnInput({
+  const passwordInput = new Input({
     id: "password",
     name: "password",
     label: "Пароль",
@@ -45,7 +45,7 @@ export function returnRegistrate(): string {
     required: true
   });
   
-  const phoneInput = returnInput({
+  const phoneInput = new Input({
     id: "phone",
     name: "phone",
     label: "Телефон",
@@ -53,19 +53,19 @@ export function returnRegistrate(): string {
     required: true
   });
   
-  const submitButton = returnButton({
+  const submitButton = new Button({
     type: "submit",
     text: "Зарегистрироваться",
     className: "button"
   });
 
   return Handlebars.compile(regTemplate)({
-    firstNameInput,
-    secondNameInput,
-    loginInput,
-    emailInput,
-    passwordInput,
-    phoneInput,
-    submitButton
+    firstNameInput: firstNameInput.getContent()?.outerHTML || '',
+    secondNameInput: secondNameInput.getContent()?.outerHTML || '',
+    loginInput: loginInput.getContent()?.outerHTML || '',
+    emailInput: emailInput.getContent()?.outerHTML || '',
+    passwordInput: passwordInput.getContent()?.outerHTML || '',
+    phoneInput: phoneInput.getContent()?.outerHTML || '',
+    submitButton: submitButton.getContent()?.outerHTML || ''
   });
 }

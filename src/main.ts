@@ -10,11 +10,20 @@ import { returnAuthorize } from './pages/forms/authorize.ts'
 import { returnRegistrate } from './pages/forms/registrate.ts'
 import { returnSettings } from './pages/forms/settings.ts'
 import { returnChat } from './pages/forms/chat.ts'
-import { returnButton } from './components/button/button.ts'
+import { Button } from './components/button/button.ts'
 import { parseHtmlString } from './utils/domUtils.ts'
 import { renderPage } from './utils/routingUtils.ts'
+import {
+  attachChatFormHandler,
+  attachAuthorizeFormHandler,
+  attachRegistrateFormHandler,
+  attachSettingsFormHandler
+} from './utils/formUtils.ts';
 
 const app = document.querySelector('#app') as HTMLElement | null;
+
+// Make route function globally accessible
+(window as any).route = route;
 
 function route() {
   const path = window.location.pathname;
@@ -32,21 +41,25 @@ function route() {
     case '/chat':
       if (app) {
         renderPage(app, returnChat());
+        attachChatFormHandler();
       }
       break;
     case '/authorize':
       if (app) {
         renderPage(app, returnAuthorize());
+        attachAuthorizeFormHandler();
       }
       break;
     case '/registrate':
       if (app) {
         renderPage(app, returnRegistrate());
+        attachRegistrateFormHandler();
       }
       break;
     case '/settings':
       if (app) {
         renderPage(app, returnSettings());
+        attachSettingsFormHandler();
       }
       break;
     case '/500':
@@ -83,15 +96,17 @@ function renderDefaultContent() {
   
   const list = document.createElement('ul');
   links.forEach(link => {
-    // Create a button that acts as a link
-    const buttonHtml = returnButton({
-      type: 'button',
-      text: link.text,
-      className: 'button',
-      href: link.href
+    // Create a button element directly
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'button';
+    button.textContent = link.text;
+    button.addEventListener('click', (event) => {
+      event.preventDefault();
+      window.history.pushState({}, '', link.href);
+      route();
     });
-    const button = parseHtmlString(buttonHtml);
-    if (button && list) {
+    if (list) {
       list.appendChild(button);
     }
   });
@@ -101,20 +116,6 @@ function renderDefaultContent() {
     container.appendChild(nav);
     app.appendChild(container);
   }
-  
-  // Add event listeners to buttons after they're added to the DOM
-  setTimeout(() => {
-    const buttons = document.querySelectorAll('.button[data-href]');
-    buttons.forEach(button => {
-      button.addEventListener('click', function(this: HTMLElement) {
-        const href = this.getAttribute('data-href');
-        if (href) {
-          window.history.pushState({}, '', href);
-          route();
-        }
-      });
-    });
-  }, 0);
 }
 
 route();

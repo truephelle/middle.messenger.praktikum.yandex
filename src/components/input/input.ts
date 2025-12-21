@@ -1,8 +1,9 @@
 import Handlebars from "handlebars";
 // @ts-ignore
 import inputTemplate from "./input.hbs?raw";
+import Block from "../../utils/block";
 
-interface InputData {
+interface InputProps {
   id: string;
   name: string;
   label: string;
@@ -12,6 +13,18 @@ interface InputData {
   accept?: string;
 }
 
-export function returnInput(data: InputData): string {
-  return Handlebars.compile(inputTemplate)(data);
+class Input extends Block {
+  constructor(props: InputProps) {
+    super("div", props);
+  }
+
+  protected render(): string {
+    return Handlebars.compile(inputTemplate)(this.props);
+  }
+}
+
+export { Input, InputProps };
+export function returnInput(data: InputProps): string {
+  const input = new Input(data);
+  return input.getContent()?.outerHTML || '';
 }

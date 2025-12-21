@@ -1,11 +1,11 @@
 import Handlebars from "handlebars";
 // @ts-ignore
 import settingsTemplate from "./settings.hbs?raw";
-import { returnInput } from '../../components/input/input.ts';
-import { returnButton } from '../../components/button/button.ts';
+import { Input } from '../../components/input/input.ts';
+import { Button } from '../../components/button/button.ts';
 
 export function returnSettings(): string {
-  const firstNameInput = returnInput({
+  const firstNameInput = new Input({
     id: "first_name",
     name: "first_name",
     label: "Имя",
@@ -13,7 +13,7 @@ export function returnSettings(): string {
     required: true
   });
   
-  const secondNameInput = returnInput({
+  const secondNameInput = new Input({
     id: "second_name",
     name: "second_name",
     label: "Фамилия",
@@ -21,7 +21,7 @@ export function returnSettings(): string {
     required: true
   });
   
-  const displayNameInput = returnInput({
+  const displayNameInput = new Input({
     id: "display_name",
     name: "display_name",
     label: "Отображаемое имя",
@@ -29,7 +29,7 @@ export function returnSettings(): string {
     required: true
   });
   
-  const loginInput = returnInput({
+  const loginInput = new Input({
     id: "login",
     name: "login",
     label: "Логин",
@@ -37,7 +37,7 @@ export function returnSettings(): string {
     required: true
   });
   
-  const emailInput = returnInput({
+  const emailInput = new Input({
     id: "email",
     name: "email",
     label: "Email",
@@ -45,7 +45,7 @@ export function returnSettings(): string {
     required: true
   });
   
-  const phoneInput = returnInput({
+  const phoneInput = new Input({
     id: "phone",
     name: "phone",
     label: "Телефон",
@@ -53,7 +53,7 @@ export function returnSettings(): string {
     required: true
   });
   
-  const avatarInput = returnInput({
+  const avatarInput = new Input({
     id: "avatar",
     name: "avatar",
     label: "Аватар",
@@ -61,36 +61,36 @@ export function returnSettings(): string {
     accept: "image/*"
   });
   
-  const oldPasswordInput = returnInput({
+  const oldPasswordInput = new Input({
     id: "oldPassword",
     name: "oldPassword",
     label: "Старый пароль",
     type: "password"
   });
   
-  const newPasswordInput = returnInput({
+  const newPasswordInput = new Input({
     id: "newPassword",
     name: "newPassword",
     label: "Новый пароль",
     type: "password"
   });
   
-  const submitButton = returnButton({
+  const submitButton = new Button({
     type: "submit",
     text: "Сохранить",
     className: "button"
   });
 
   return Handlebars.compile(settingsTemplate)({
-    firstNameInput,
-    secondNameInput,
-    displayNameInput,
-    loginInput,
-    emailInput,
-    phoneInput,
-    avatarInput,
-    oldPasswordInput,
-    newPasswordInput,
-    submitButton
+    firstNameInput: firstNameInput.getContent()?.outerHTML || '',
+    secondNameInput: secondNameInput.getContent()?.outerHTML || '',
+    displayNameInput: displayNameInput.getContent()?.outerHTML || '',
+    loginInput: loginInput.getContent()?.outerHTML || '',
+    emailInput: emailInput.getContent()?.outerHTML || '',
+    phoneInput: phoneInput.getContent()?.outerHTML || '',
+    avatarInput: avatarInput.getContent()?.outerHTML || '',
+    oldPasswordInput: oldPasswordInput.getContent()?.outerHTML || '',
+    newPasswordInput: newPasswordInput.getContent()?.outerHTML || '',
+    submitButton: submitButton.getContent()?.outerHTML || ''
   });
 }

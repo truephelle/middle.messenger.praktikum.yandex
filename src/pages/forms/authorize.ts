@@ -1,11 +1,11 @@
 import Handlebars from "handlebars";
 // @ts-ignore
 import authorizeTemplate from "./authorize.hbs?raw";
-import { returnInput } from '../../components/input/input.ts';
-import { returnButton } from '../../components/button/button.ts';
+import { Input } from '../../components/input/input.ts';
+import { Button } from '../../components/button/button.ts';
 
 export function returnAuthorize(): string {
-  const loginInput = returnInput({
+  const loginInput = new Input({
     id: "login",
     name: "login",
     label: "Логин",
@@ -13,7 +13,7 @@ export function returnAuthorize(): string {
     required: true
   });
   
-  const passwordInput = returnInput({
+  const passwordInput = new Input({
     id: "password",
     name: "password",
     label: "Пароль",
@@ -21,15 +21,15 @@ export function returnAuthorize(): string {
     required: true
   });
   
-  const submitButton = returnButton({
+  const submitButton = new Button({
     type: "submit",
     text: "Войти",
     className: "button"
   });
 
   return Handlebars.compile(authorizeTemplate)({
-    loginInput,
-    passwordInput,
-    submitButton
+    loginInput: loginInput.getContent()?.outerHTML || '',
+    passwordInput: passwordInput.getContent()?.outerHTML || '',
+    submitButton: submitButton.getContent()?.outerHTML || ''
   });
 }
