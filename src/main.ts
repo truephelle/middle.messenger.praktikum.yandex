@@ -1,6 +1,5 @@
 import './style.css'
 import './components/input/input.css'
-import './components/listItem/listItem.css'
 import './components/button/button.css'
 import './pages/forms/forms.css'
 import './pages/forms/chat.css'
@@ -11,7 +10,7 @@ import { returnAuthorize } from './pages/forms/authorize.ts'
 import { returnRegistrate } from './pages/forms/registrate.ts'
 import { returnSettings } from './pages/forms/settings.ts'
 import { returnChat } from './pages/forms/chat.ts'
-import { returnListItem } from './components/listItem/listItem.ts'
+import { returnButton } from './components/button/button.ts'
 import { parseHtmlString } from './utils/domUtils.ts'
 import { renderPage } from './utils/routingUtils.ts'
 
@@ -84,10 +83,16 @@ function renderDefaultContent() {
   
   const list = document.createElement('ul');
   links.forEach(link => {
-    const listItemHtml = returnListItem(link);
-    const listItem = parseHtmlString(listItemHtml);
-    if (listItem && list) {
-      list.appendChild(listItem);
+    // Create a button that acts as a link
+    const buttonHtml = returnButton({
+      type: 'button',
+      text: link.text,
+      className: 'button',
+      href: link.href
+    });
+    const button = parseHtmlString(buttonHtml);
+    if (button && list) {
+      list.appendChild(button);
     }
   });
   
@@ -96,6 +101,20 @@ function renderDefaultContent() {
     container.appendChild(nav);
     app.appendChild(container);
   }
+  
+  // Add event listeners to buttons after they're added to the DOM
+  setTimeout(() => {
+    const buttons = document.querySelectorAll('.button[data-href]');
+    buttons.forEach(button => {
+      button.addEventListener('click', function(this: HTMLElement) {
+        const href = this.getAttribute('data-href');
+        if (href) {
+          window.history.pushState({}, '', href);
+          route();
+        }
+      });
+    });
+  }, 0);
 }
 
 route();
