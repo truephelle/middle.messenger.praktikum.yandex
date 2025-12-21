@@ -33,7 +33,9 @@ class EventBus {
   }
 
   emit(event: string, ...args: any[]): void {
-    this._check(event);
+    if (!(event in this.listeners)) {
+      return;
+    }
     this.listeners[event].forEach((callback) => { callback(...args); });
   }
 }

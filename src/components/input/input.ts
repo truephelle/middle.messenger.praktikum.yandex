@@ -24,11 +24,9 @@ class Input extends Block {
     super("div", props);
     this.inputEventBus = new EventBus();
     
-    // Register event listeners to prevent errors
     this.inputEventBus.on('input.validation.error', () => {});
     this.inputEventBus.on('input.validation.success', () => {});
     
-    // Register listeners for global event bus events
     globalEventBus.on('input.validation.error', () => {});
     globalEventBus.on('input.validation.success', () => {});
     globalEventBus.on('form.validation.error', () => {});
@@ -37,14 +35,12 @@ class Input extends Block {
   }
 
   protected componentDidMount(): void {
-    // Add blur validation
     const inputElement = this.getContent()?.querySelector('input');
     if (inputElement) {
       inputElement.addEventListener('blur', () => {
         this.validate();
       });
       
-      // Clear error when user starts typing
       inputElement.addEventListener('input', () => {
         this.clearError();
       });
@@ -101,18 +97,15 @@ class Input extends Block {
     });
   }
 
-  // Clear error message
   private clearError(): void {
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return;
     
     inputElement.classList.remove('field-error');
     
-    // Emit event to hide tooltip
     globalEventBus.emit('input.focus', inputElement);
   }
 
-  // Add event listener
   public on(event: string, callback: (...args: any[]) => void): void {
     this.inputEventBus.on(event, callback);
   }

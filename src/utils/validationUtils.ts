@@ -58,39 +58,8 @@ export function validateForm(formData: Record<string, string>): Record<string, s
   return errors;
 }
 
-function clearFieldError(field: HTMLInputElement): void {
-  field.classList.remove('field-error');
-}
-
-function showFieldError(field: HTMLInputElement, errorMessage: string | null): void {
-  clearFieldError(field);
-  
-  if (errorMessage) {
-    field.classList.add('field-error');
-    
-    const form = field.closest('form');
-    const formId = form ? form.id : 'unknown-form';
-    
-    globalEventBus.emit('form.validation.error', {
-      formId: formId,
-      fieldName: field.name,
-      message: errorMessage
-    });
-  }
-}
-
 export function setupFormValidation(formId: string, fieldNames: string[]): HTMLFormElement | null {
   const eventBus = new EventBus();
-  
-  eventBus.on('form.validation.error', () => {});
-  eventBus.on('form.validation.success', () => {});
-  eventBus.on('form.validation.failed', () => {});
-  eventBus.on('form.validation.passed', () => {});
-  
-  globalEventBus.on('form.validation.error', () => {});
-  globalEventBus.on('form.validation.success', () => {});
-  globalEventBus.on('form.validation.failed', () => {});
-  globalEventBus.on('form.validation.passed', () => {});
   
   const form = document.getElementById(formId) as HTMLFormElement | null;
   if (!form) return null;
@@ -101,26 +70,23 @@ export function setupFormValidation(formId: string, fieldNames: string[]): HTMLF
       field.addEventListener('blur', () => {
         const error = validateField(fieldName, field.value);
         if (error) {
-          showFieldError(field, error);
           globalEventBus.emit('form.validation.error', { formId, fieldName, message: error });
         } else {
-          clearFieldError(field);
           globalEventBus.emit('form.validation.success', { formId, fieldName });
         }
-      });
-      
-      field.addEventListener('input', () => {
-        clearFieldError(field);
       });
     }
   });
 
-  form.addEventListener('form.validation.passed', (event: Event) => {
-    const formData = new FormData(form);
-    const data: Record<string, any> = {};
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
+  globalEventBus.on('form.validation.passed', (data: { formId: string }) => {
+    if (data.formId === formId) {
+      const formData = new FormData(form);
+      const dataObj: Record<string, any> = {};
+      formData.forEach((value, key) => {
+        dataObj[key] = value;
+      });
+      console.log('Form validation passed with data:', dataObj);
+    }
   });
 
   form.addEventListener('submit', (event) => {
@@ -134,23 +100,30 @@ export function setupFormValidation(formId: string, fieldNames: string[]): HTMLF
     
     const errors = validateForm(formData);
     let hasErrors = false;
+    let firstErrorField: HTMLInputElement | null = null;
     
     fieldNames.forEach(fieldName => {
       const field = form.querySelector(`[name="${fieldName}"]`) as HTMLInputElement | null;
       if (field && errors[fieldName]) {
-        showFieldError(field, errors[fieldName]);
         globalEventBus.emit('form.validation.error', { formId, fieldName, message: errors[fieldName] });
         hasErrors = true;
+        if (!firstErrorField) {
+          firstErrorField = field;
+        }
       } else if (field) {
-        clearFieldError(field);
         globalEventBus.emit('form.validation.success', { formId, fieldName });
       }
     });
+    
+    if (firstErrorField) {
+      (firstErrorField as HTMLInputElement).focus();
+    }
     
     if (hasErrors) {
       event.preventDefault();
       globalEventBus.emit('form.validation.failed', { formId, errors });
     } else {
+      event.preventDefault();
       globalEventBus.emit('form.validation.passed', { formId });
     }
   });

@@ -19,7 +19,6 @@ import {
   attachSettingsFormHandler
 } from './utils/formUtils.ts';
 
-
 const app = document.querySelector('#app') as HTMLElement | null;
 
 function route() {
