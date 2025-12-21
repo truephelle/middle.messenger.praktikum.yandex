@@ -7,14 +7,13 @@ import { returnSettings } from './forms/settings.ts'
 import { returnChat } from './forms/chat.ts'
 import { returnListItem } from './components/listItem/listItem.ts'
 import { parseHtmlString } from './utils/domUtils.ts'
+import { renderPage } from './utils/routingUtils.ts'
 
 const app = document.querySelector('#app') as HTMLElement | null;
 
-// Simple routing based on URL path
 function route() {
   const path = window.location.pathname;
   
-  // Clear the app container
   if (app) {
     while (app.firstChild) {
       app.removeChild(app.firstChild);
@@ -27,50 +26,32 @@ function route() {
       break;
     case '/chat':
       if (app) {
-        const element = parseHtmlString(returnChat());
-        if (element) {
-          app.appendChild(element);
-        }
+        renderPage(app, returnChat());
       }
       break;
     case '/authorize':
       if (app) {
-        const element = parseHtmlString(returnAuthorize());
-        if (element) {
-          app.appendChild(element);
-        }
+        renderPage(app, returnAuthorize());
       }
       break;
     case '/registrate':
       if (app) {
-        const element = parseHtmlString(returnRegistrate());
-        if (element) {
-          app.appendChild(element);
-        }
+        renderPage(app, returnRegistrate());
       }
       break;
     case '/settings':
       if (app) {
-        const element = parseHtmlString(returnSettings());
-        if (element) {
-          app.appendChild(element);
-        }
+        renderPage(app, returnSettings());
       }
       break;
     case '/500':
       if (app) {
-        const element = parseHtmlString(return500());
-        if (element) {
-          app.appendChild(element);
-        }
+        renderPage(app, return500());
       }
       break;
     default:
       if (app) {
-        const element = parseHtmlString(return404());
-        if (element) {
-          app.appendChild(element);
-        }
+        renderPage(app, return404());
       }
   }
 }
