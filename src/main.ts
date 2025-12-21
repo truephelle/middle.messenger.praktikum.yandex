@@ -11,7 +11,6 @@ import { returnRegistrate } from './pages/forms/registrate.ts'
 import { returnSettings } from './pages/forms/settings.ts'
 import { returnChat } from './pages/forms/chat.ts'
 import { Button } from './components/button/button.ts'
-import { parseHtmlString } from './utils/domUtils.ts'
 import { renderPage } from './utils/routingUtils.ts'
 import {
   attachChatFormHandler,
@@ -19,11 +18,9 @@ import {
   attachRegistrateFormHandler,
   attachSettingsFormHandler
 } from './utils/formUtils.ts';
+import { setupFormValidation } from './utils/validationUtils.ts';
 
 const app = document.querySelector('#app') as HTMLElement | null;
-
-// Make route function globally accessible
-(window as any).route = route;
 
 function route() {
   const path = window.location.pathname;
@@ -96,7 +93,6 @@ function renderDefaultContent() {
   
   const list = document.createElement('ul');
   links.forEach(link => {
-    // Create a button element directly
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'button';
