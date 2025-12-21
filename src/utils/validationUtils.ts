@@ -1,3 +1,5 @@
+import EventBus from './eventBus';
+
 // Validation rules
 const VALIDATION_RULES = {
   first_name: {
@@ -60,6 +62,14 @@ export function validateForm(formData: Record<string, string>): Record<string, s
 
 // Setup validation for a form
 export function setupFormValidation(formId: string, fieldNames: string[]): void {
+  const eventBus = new EventBus();
+  
+  // Register event listeners to prevent errors
+  eventBus.on('form.validation.error', () => {});
+  eventBus.on('form.validation.success', () => {});
+  eventBus.on('form.validation.failed', () => {});
+  eventBus.on('form.validation.passed', () => {});
+  
   queueMicrotask(() => {
     const form = document.getElementById(formId) as HTMLFormElement | null;
     if (!form) return;
@@ -70,7 +80,13 @@ export function setupFormValidation(formId: string, fieldNames: string[]): void 
         // Add blur validation
         field.addEventListener('blur', () => {
           const error = validateField(fieldName, field.value);
-          showFieldError(field, error);
+          if (error) {
+            showFieldError(field, error);
+            eventBus.emit('form.validation.error', { formId, fieldName, message: error });
+          } else {
+            clearFieldError(field);
+            eventBus.emit('form.validation.success', { formId, fieldName });
+          }
         });
         
         // Clear error when user starts typing
@@ -97,14 +113,19 @@ export function setupFormValidation(formId: string, fieldNames: string[]): void 
         const field = form.querySelector(`[name="${fieldName}"]`) as HTMLInputElement | null;
         if (field && errors[fieldName]) {
           showFieldError(field, errors[fieldName]);
+          eventBus.emit('form.validation.error', { formId, fieldName, message: errors[fieldName] });
           hasErrors = true;
         } else if (field) {
           clearFieldError(field);
+          eventBus.emit('form.validation.success', { formId, fieldName });
         }
       });
       
       if (hasErrors) {
         event.preventDefault();
+        eventBus.emit('form.validation.failed', { formId, errors });
+      } else {
+        eventBus.emit('form.validation.passed', { formId });
       }
     });
   });
