@@ -28,16 +28,12 @@ class Input extends Block {
   }
 
   protected componentDidMount(): void {
-    const inputElement = this.getContent()?.querySelector('input');
-    if (inputElement) {
-      inputElement.addEventListener('blur', () => {
-        this.validate();
-      });
-      
-      inputElement.addEventListener('input', () => {
+    this.setProps({'focus': () => {
         this.clearError();
-      });
-    }
+      }});
+    this.setProps({'input': () => {
+        this.clearError();
+      }});
   }
 
   public validate(): boolean {

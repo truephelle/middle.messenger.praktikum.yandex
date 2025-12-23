@@ -49,7 +49,15 @@ class Block {
     eventBus.on(Block.EVENTS.FLOW_CDU, this._componentDidUpdate.bind(this));
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
   }
-
+  
+  private _removeEvents() {
+    const { events = {} } = this.props;
+    Object.keys(events).forEach((eventName) => {
+      if (events[eventName] !== undefined) {
+        this._element?.removeEventListener(eventName, events[eventName]);
+      }
+    });
+  }
   private _createResources(): void {
     if (this._meta) {
       const { tagName } = this._meta;
@@ -97,6 +105,7 @@ class Block {
   }
 
   private _render(): void {
+    this._removeEvents();
     const block = this.render();
     if (this._element) {
       this._element.innerHTML = block;
