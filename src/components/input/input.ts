@@ -25,10 +25,10 @@ class Input extends Block {
   
   constructor(props: InputProps) {
     const defaultEvents = {
-      focusin: (e: Event) => {
+      focusin: (_e: Event) => {
         this.clearError();
       },
-      focusout: (e: Event) => {
+      focusout: (_e: Event) => {
         this.handleValidation();
       }
     };

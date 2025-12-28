@@ -1,4 +1,3 @@
-import Handlebars from "handlebars";
 // @ts-expect-error TS7016: Could not find a declaration file for module
 import regTemplate from "./registrate.hbs?raw";
 import { Input } from '../../components/input/input';
