@@ -20,6 +20,19 @@ class Button extends Block {
     super("button", { ...props, events });
   }
 
+  protected init(): void {
+    super.init();
+    // Set button attributes programmatically
+    if (this._element) {
+      if (this.props.type) {
+        this._element.setAttribute('type', this.props.type);
+      }
+      if (this.props.href) {
+        this._element.setAttribute('data-href', this.props.href);
+      }
+    }
+  }
+
   protected render(): string {
     return Handlebars.compile(buttonTemplate)(this.props);
   }
