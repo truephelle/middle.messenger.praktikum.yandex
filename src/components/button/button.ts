@@ -17,7 +17,7 @@ class Button extends Block {
   constructor(props: ButtonProps) {
     // Convert onClick to events prop for proper event handling
     const events = props.onClick ? { click: props.onClick } : {};
-    super("div", { ...props, events });
+    super("button", { ...props, events });
   }
 
   protected render(): string {

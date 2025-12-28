@@ -42,7 +42,8 @@ function route() {
       break;
     case '/authorize':
       if (app) {
-        renderPage(app, returnAuthorize());
+        const authorizeData = returnAuthorize();
+        app.appendChild(authorizeData.container);
         attachAuthorizeFormHandler();
       }
       break;

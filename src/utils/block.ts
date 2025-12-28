@@ -14,7 +14,9 @@ class Block {
     INIT: "init",
     FLOW_CDM: "flow:component-did-mount",
     FLOW_CDU: "flow:component-did-update",
-    FLOW_RENDER: "flow:render"
+    FLOW_RENDER: "flow:render",
+    FOCUSIN: "focusin",
+    FOCUSOUT: "focusout",
   };
 
   protected _element: HTMLElement | null = null;
@@ -29,6 +31,8 @@ class Block {
    * @returns {void}
    */
   constructor(tagName: string = "div", props: BlockProps = {}) {
+    console.log(`constructing block ${tagName} with events {${Object.entries(props.events).map(([k, v]) => `${k}: ${typeof v}`).join(', ')}}`);
+    
     const eventBus = new EventBus();
     this._meta = {
       tagName,
@@ -52,8 +56,14 @@ class Block {
   
   private _addEvents() {
     const { events = {} } = this.props;
+    console.log(`_addEvents called, element:`, this._element);
+    console.log(`Events to add:`, Object.keys(events));
     Object.keys(events).forEach((eventName) => {
       if (events[eventName] !== undefined) {
+        console.log(`adding event ${eventName} with handler ${events[eventName]}`);
+        console.log(`Element exists:`, !!this._element);
+        console.log(`Element HTML:`, this._element?.outerHTML);
+  
         this._element?.addEventListener(eventName, events[eventName]);
       }
     });
@@ -71,6 +81,9 @@ class Block {
     if (this._meta) {
       const { tagName } = this._meta;
       this._element = this._createDocumentElement(tagName);
+      if (this.props.className) {
+        this._element.className = this.props.className;
+      }
     }
   }
 

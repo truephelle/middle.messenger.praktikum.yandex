@@ -14,30 +14,34 @@ interface InputProps {
   placeholder?: string;
   accept?: string;
   regex?: RegExp;
+  className?: string;
   events?: {
-    focus?: (event: Event) => void;
-    input?: (event: Event) => void;
-    blur?: (event: Event) => void;
+    focusin?: (event: Event) => void;
+    focusout?: (event: Event) => void;
   };
 }
 
 class Input extends Block {
   
   constructor(props: InputProps) {
-    // Create default event handlers for focus, input, and blur
     const defaultEvents = {
-      focus: () => this.clearError(),
-      input: () => this.clearError(),
-      blur: () => this.handleBlurValidation()
+      focusin: (e: Event) => {
+        console.log('focusin event triggered!', e);
+        this.clearError();
+      },
+      focusout: (e: Event) => {
+        console.log('focusout event triggered!', e);
+        this.handleValidation();
+      }
     };
-    
-    // Merge provided events with default events
+    console.log(`default events {${Object.entries(defaultEvents).map(([k, v]) => `${k}: ${typeof v}`).join(', ')}}`);
     const events = { ...defaultEvents, ...props.events };
-    
-    super("div", { ...props, events });
+    console.log(`overall events are {${Object.entries(events).map(([k, v]) => `${k}: ${typeof v}`).join(', ')}}`);
+    super("div", { ...props, events, className: "form-group" });
   }
 
   public validate(): boolean {
+    console.log("running validation");
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return true;
     
@@ -45,6 +49,8 @@ class Input extends Block {
     const fieldName = this.props.name;
     
     const rule = VALIDATION_RULES[fieldName as keyof typeof VALIDATION_RULES];
+
+    console.log(`found rule  ${rule}`);
     if (rule) {
       if (!rule.pattern.test(value)) {
         this.showError(rule.message);
@@ -88,6 +94,7 @@ class Input extends Block {
   }
 
   private clearError(): void {
+    console.log('clearError');
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return;
     
@@ -96,7 +103,8 @@ class Input extends Block {
     globalEventBus.emit('input.focus', inputElement);
   }
 
-  private handleBlurValidation(): void {
+  private handleValidation(): void {
+    console.log('handleValidation');
     const inputElement = this.getContent()?.querySelector('input') as HTMLInputElement;
     if (!inputElement) return;
     
