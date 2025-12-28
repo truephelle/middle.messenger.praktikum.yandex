@@ -23,12 +23,12 @@
 }
 
 .form-group input.field-error {
-  border-color: #ff4444;
+  border-color: #f44;
   background-color: #fff5f5;
 }
 
 .form-group input.field-error:focus {
   outline: none;
-  border-color: #ff4444;
-  box-shadow: 0 0 0 2px rgba(255, 68, 68, 0.2);
+  border-color: #f44;
+  box-shadow: 0 0 0 2px rgb(255 68 68 / 20%);
 }
