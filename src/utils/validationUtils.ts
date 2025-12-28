@@ -61,20 +61,6 @@ export function setupFormValidation(formId: string, fieldNames: string[]): HTMLF
   const form = document.getElementById(formId) as HTMLFormElement | null;
   if (!form) return null;
   
-  fieldNames.forEach(fieldName => {
-    const field = form.querySelector(`[name="${fieldName}"]`) as HTMLInputElement | null;
-    if (field) {
-      field.addEventListener('blur', () => {
-        const error = validateField(fieldName, field.value);
-        if (error) {
-          globalEventBus.emit('form.validation.error', { formId, fieldName, message: error });
-        } else {
-          globalEventBus.emit('form.validation.success', { formId, fieldName });
-        }
-      });
-    }
-  });
-
   globalEventBus.on('form.validation.passed', (data: { formId: string }) => {
     if (data.formId === formId) {
       const formData = new FormData(form);

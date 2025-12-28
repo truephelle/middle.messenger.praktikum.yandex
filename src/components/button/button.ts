@@ -8,20 +8,16 @@ interface ButtonProps {
   text: string;
   className?: string;
   onClick?: (event: Event) => void;
+  events?: {
+    click?: (event: Event) => void;
+  };
 }
 
 class Button extends Block {
   constructor(props: ButtonProps) {
-    super("div", props);
-  }
-
-  protected componentDidMount(): void {
-    const buttonElement = this.getContent()?.querySelector('button');
-    if (this.props.onClick) {
-      if (buttonElement) {
-        buttonElement.addEventListener('click', this.props.onClick);
-      }
-    }
+    // Convert onClick to events prop for proper event handling
+    const events = props.onClick ? { click: props.onClick } : {};
+    super("div", { ...props, events });
   }
 
   protected render(): string {

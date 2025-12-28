@@ -4,6 +4,9 @@ import authorizeTemplate from "./authorize.hbs?raw";
 import { Input } from '../../components/input/input';
 import { Button } from '../../components/button/button';
 
+// Store component instances for validation
+const formInstances: Record<string, any> = {};
+
 export function returnAuthorize(): string {
   const loginInput = new Input({
     id: "login",
@@ -27,9 +30,17 @@ export function returnAuthorize(): string {
     className: "button"
   });
 
+  // Store instances for validation
+  formInstances.login = loginInput;
+  formInstances.password = passwordInput;
+
   return Handlebars.compile(authorizeTemplate)({
     loginInput: loginInput.getContent()?.outerHTML || '',
     passwordInput: passwordInput.getContent()?.outerHTML || '',
     submitButton: submitButton.getContent()?.outerHTML || ''
   });
+}
+
+export function getFormInstances(): Record<string, any> {
+  return formInstances;
 }

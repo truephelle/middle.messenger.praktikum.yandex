@@ -50,6 +50,15 @@ class Block {
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
   }
   
+  private _addEvents() {
+    const { events = {} } = this.props;
+    Object.keys(events).forEach((eventName) => {
+      if (events[eventName] !== undefined) {
+        this._element?.addEventListener(eventName, events[eventName]);
+      }
+    });
+  }
+
   private _removeEvents() {
     const { events = {} } = this.props;
     Object.keys(events).forEach((eventName) => {
@@ -110,6 +119,7 @@ class Block {
     if (this._element) {
       this._element.innerHTML = block;
     }
+    this._addEvents();
     
     this.eventBus().emit(Block.EVENTS.FLOW_CDM);
   }

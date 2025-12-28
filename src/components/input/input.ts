@@ -2,7 +2,6 @@ import Handlebars from "handlebars";
 // @ts-expect-error TS7016: Could not find a declaration file for module
 import inputTemplate from "./input.hbs?raw";
 import Block from "../../utils/block";
-import EventBus from "../../utils/eventBus";
 import globalEventBus from "../../utils/globalEventBus";
 import { VALIDATION_RULES } from "../../utils/validationUtils";
 
@@ -15,25 +14,27 @@ interface InputProps {
   placeholder?: string;
   accept?: string;
   regex?: RegExp;
+  events?: {
+    focus?: (event: Event) => void;
+    input?: (event: Event) => void;
+    blur?: (event: Event) => void;
+  };
 }
 
 class Input extends Block {
-  private inputEventBus: EventBus;
   
   constructor(props: InputProps) {
-    super("div", props);
-    this.inputEventBus = new EventBus();
+    // Create default event handlers for focus, input, and blur
+    const defaultEvents = {
+      focus: () => this.clearError(),
+      input: () => this.clearError(),
+      blur: () => this.handleBlurValidation()
+    };
     
-    // Event listeners will be handled by the tooltip component
-  }
-
-  protected componentDidMount(): void {
-    this.setProps({'focus': () => {
-        this.clearError();
-      }});
-    this.setProps({'input': () => {
-        this.clearError();
-      }});
+    // Merge provided events with default events
+    const events = { ...defaultEvents, ...props.events };
+    
+    super("div", { ...props, events });
   }
 
   public validate(): boolean {
@@ -95,8 +96,38 @@ class Input extends Block {
     globalEventBus.emit('input.focus', inputElement);
   }
 
-  public on(event: string, callback: (...args: any[]) => void): void {
-    this.inputEventBus.on(event, callback);
+  private handleBlurValidation(): void {
+    const inputElement = this.getContent()?.querySelector('input') as HTMLInputElement;
+    if (!inputElement) return;
+    
+    const fieldName = this.props.name;
+    const value = inputElement.value;
+    
+    let formElement = inputElement.closest('form') as HTMLFormElement;
+    const formId = formElement?.id || 'unknown';
+    
+    const error = this.validate() ? null : this.getValidationMessage(value);
+    
+    if (error) {
+      globalEventBus.emit('form.validation.error', { formId, fieldName, message: error });
+    } else {
+      globalEventBus.emit('form.validation.success', { formId, fieldName });
+    }
+  }
+
+  private getValidationMessage(value: string): string | null {
+    const fieldName = this.props.name;
+    
+    const rule = VALIDATION_RULES[fieldName as keyof typeof VALIDATION_RULES];
+    if (rule && !rule.pattern.test(value)) {
+      return rule.message;
+    }
+    
+    if (this.props.regex && !this.props.regex.test(value)) {
+      return 'Invalid format';
+    }
+    
+    return null;
   }
 
   protected render(): string {
