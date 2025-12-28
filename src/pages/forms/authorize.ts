@@ -4,12 +4,9 @@ import authorizeTemplate from "./authorize.hbs?raw";
 import { Input } from '../../components/input/input';
 import { Button } from '../../components/button/button';
 
-// Store component instances for validation
 const formInstances: Record<string, any> = {};
 
 export function returnAuthorize(): { container: HTMLElement; components: { login: Input; password: Input; button: Button } } {
-  console.log('Creating authorize page components...');
-  
   const loginInput = new Input({
     id: "login",
     name: "login",
@@ -32,14 +29,10 @@ export function returnAuthorize(): { container: HTMLElement; components: { login
     className: "button"
   });
 
-  console.log('Login input element:', loginInput.getContent());
-  console.log('Password input element:', passwordInput.getContent());
 
-  // Store instances for validation
   formInstances.login = loginInput;
   formInstances.password = passwordInput;
 
-  // Create container and add components directly
   const container = document.createElement('div');
   container.className = 'form-container';
   
@@ -65,8 +58,6 @@ export function returnAuthorize(): { container: HTMLElement; components: { login
   footer.appendChild(link);
   form.appendChild(footer);
   container.appendChild(form);
-
-  console.log('Final container HTML:', container.outerHTML);
 
   return {
     container,

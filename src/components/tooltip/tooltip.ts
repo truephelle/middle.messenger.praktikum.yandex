@@ -34,11 +34,9 @@ class Tooltip {
         });
 
         globalEventBus.on('form.validation.failed', () => {
-            // Handle form validation failed event
         });
 
         globalEventBus.on('form.validation.passed', () => {
-            // Handle form validation passed event
         });
 
         globalEventBus.on('input.focus', (_element: HTMLInputElement) => {

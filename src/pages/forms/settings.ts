@@ -4,7 +4,9 @@ import settingsTemplate from "./settings.hbs?raw";
 import { Input } from '../../components/input/input';
 import { Button } from '../../components/button/button';
 
-export function returnSettings(): string {
+const formInstances: Record<string, any> = {};
+
+export function returnSettings(): { container: HTMLElement; components: Record<string, any> } {
   const firstNameInput = new Input({
     id: "first_name",
     name: "first_name",
@@ -81,16 +83,51 @@ export function returnSettings(): string {
     className: "button"
   });
 
-  return Handlebars.compile(settingsTemplate)({
-    firstNameInput: firstNameInput.getContent()?.outerHTML || '',
-    secondNameInput: secondNameInput.getContent()?.outerHTML || '',
-    displayNameInput: displayNameInput.getContent()?.outerHTML || '',
-    loginInput: loginInput.getContent()?.outerHTML || '',
-    emailInput: emailInput.getContent()?.outerHTML || '',
-    phoneInput: phoneInput.getContent()?.outerHTML || '',
-    avatarInput: avatarInput.getContent()?.outerHTML || '',
-    oldPasswordInput: oldPasswordInput.getContent()?.outerHTML || '',
-    newPasswordInput: newPasswordInput.getContent()?.outerHTML || '',
-    submitButton: submitButton.getContent()?.outerHTML || ''
-  });
+  formInstances.first_name = firstNameInput;
+  formInstances.second_name = secondNameInput;
+  formInstances.display_name = displayNameInput;
+  formInstances.login = loginInput;
+  formInstances.email = emailInput;
+  formInstances.phone = phoneInput;
+  formInstances.avatar = avatarInput;
+  formInstances.oldPassword = oldPasswordInput;
+  formInstances.newPassword = newPasswordInput;
+
+  const container = document.createElement('div');
+  container.className = 'form-container';
+  
+  const form = document.createElement('form');
+  form.className = 'auth-form';
+  form.id = 'settings-form';
+  
+  const title = document.createElement('h2');
+  title.textContent = 'Настройки профиля';
+  
+  form.appendChild(title);
+  form.appendChild(firstNameInput.getContent() as HTMLElement);
+  form.appendChild(secondNameInput.getContent() as HTMLElement);
+  form.appendChild(displayNameInput.getContent() as HTMLElement);
+  form.appendChild(loginInput.getContent() as HTMLElement);
+  form.appendChild(emailInput.getContent() as HTMLElement);
+  form.appendChild(phoneInput.getContent() as HTMLElement);
+  form.appendChild(avatarInput.getContent() as HTMLElement);
+  
+  const passwordTitle = document.createElement('h3');
+  passwordTitle.textContent = 'Изменение пароля';
+  form.appendChild(passwordTitle);
+  
+  form.appendChild(oldPasswordInput.getContent() as HTMLElement);
+  form.appendChild(newPasswordInput.getContent() as HTMLElement);
+  form.appendChild(submitButton.getContent() as HTMLElement);
+  
+  container.appendChild(form);
+
+  return {
+    container,
+    components: formInstances
+  };
+}
+
+export function getFormInstances(): Record<string, any> {
+  return formInstances;
 }

@@ -31,8 +31,6 @@ class Block {
    * @returns {void}
    */
   constructor(tagName: string = "div", props: BlockProps = {}) {
-    console.log(`constructing block ${tagName} with events {${Object.entries(props.events).map(([k, v]) => `${k}: ${typeof v}`).join(', ')}}`);
-    
     const eventBus = new EventBus();
     this._meta = {
       tagName,
@@ -54,22 +52,16 @@ class Block {
     eventBus.on(Block.EVENTS.FLOW_RENDER, this._render.bind(this));
   }
   
-  private _addEvents() {
+  protected _addEvents() {
     const { events = {} } = this.props;
-    console.log(`_addEvents called, element:`, this._element);
-    console.log(`Events to add:`, Object.keys(events));
     Object.keys(events).forEach((eventName) => {
       if (events[eventName] !== undefined) {
-        console.log(`adding event ${eventName} with handler ${events[eventName]}`);
-        console.log(`Element exists:`, !!this._element);
-        console.log(`Element HTML:`, this._element?.outerHTML);
-  
         this._element?.addEventListener(eventName, events[eventName]);
       }
     });
   }
 
-  private _removeEvents() {
+  protected _removeEvents() {
     const { events = {} } = this.props;
     Object.keys(events).forEach((eventName) => {
       if (events[eventName] !== undefined) {

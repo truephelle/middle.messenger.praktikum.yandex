@@ -58,7 +58,6 @@ export function validateForm(formData: Record<string, string>): Record<string, s
 }
 
 export function setupFormValidation(formId: string, fieldNames: string[]): HTMLFormElement | null {
-  console.log(`setupFormValidation for ${formId}`);
   const form = document.getElementById(formId) as HTMLFormElement | null;
   if (!form) return null;
   

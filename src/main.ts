@@ -36,7 +36,8 @@ function route() {
       break;
     case '/chat':
       if (app) {
-        renderPage(app, returnChat());
+        const chatData = returnChat();
+        app.appendChild(chatData.container);
         attachChatFormHandler();
       }
       break;
@@ -49,13 +50,15 @@ function route() {
       break;
     case '/registrate':
       if (app) {
-        renderPage(app, returnRegistrate());
+        const registrateData = returnRegistrate();
+        app.appendChild(registrateData.container);
         attachRegistrateFormHandler();
       }
       break;
     case '/settings':
       if (app) {
-        renderPage(app, returnSettings());
+        const settingsData = returnSettings();
+        app.appendChild(settingsData.container);
         attachSettingsFormHandler();
       }
       break;

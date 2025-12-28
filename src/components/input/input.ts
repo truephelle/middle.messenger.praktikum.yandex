@@ -26,22 +26,46 @@ class Input extends Block {
   constructor(props: InputProps) {
     const defaultEvents = {
       focusin: (e: Event) => {
-        console.log('focusin event triggered!', e);
         this.clearError();
       },
       focusout: (e: Event) => {
-        console.log('focusout event triggered!', e);
         this.handleValidation();
       }
     };
-    console.log(`default events {${Object.entries(defaultEvents).map(([k, v]) => `${k}: ${typeof v}`).join(', ')}}`);
     const events = { ...defaultEvents, ...props.events };
-    console.log(`overall events are {${Object.entries(events).map(([k, v]) => `${k}: ${typeof v}`).join(', ')}}`);
     super("div", { ...props, events, className: "form-group" });
   }
 
+  protected _addEvents() {
+    const { events = {} } = this.props;
+    
+    Object.keys(events).forEach((eventName) => {
+      if (events[eventName] !== undefined) {
+        const inputElement = this._element?.querySelector('input');
+        if (inputElement) {
+          inputElement.addEventListener(eventName, events[eventName]);
+        } else {
+          this._element?.addEventListener(eventName, events[eventName]);
+        }
+      }
+    });
+  }
+
+  protected _removeEvents() {
+    const { events = {} } = this.props;
+    Object.keys(events).forEach((eventName) => {
+      if (events[eventName] !== undefined) {
+        const inputElement = this._element?.querySelector('input');
+        if (inputElement) {
+          inputElement.removeEventListener(eventName, events[eventName]);
+        } else {
+          this._element?.removeEventListener(eventName, events[eventName]);
+        }
+      }
+    });
+  }
+
   public validate(): boolean {
-    console.log("running validation");
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return true;
     
@@ -49,8 +73,6 @@ class Input extends Block {
     const fieldName = this.props.name;
     
     const rule = VALIDATION_RULES[fieldName as keyof typeof VALIDATION_RULES];
-
-    console.log(`found rule  ${rule}`);
     if (rule) {
       if (!rule.pattern.test(value)) {
         this.showError(rule.message);
@@ -93,8 +115,7 @@ class Input extends Block {
     });
   }
 
-  private clearError(): void {
-    console.log('clearError');
+  public clearError(): void {
     const inputElement = this.getContent()?.querySelector('input');
     if (!inputElement) return;
     
@@ -104,7 +125,6 @@ class Input extends Block {
   }
 
   private handleValidation(): void {
-    console.log('handleValidation');
     const inputElement = this.getContent()?.querySelector('input') as HTMLInputElement;
     if (!inputElement) return;
     

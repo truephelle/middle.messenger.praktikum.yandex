@@ -15,14 +15,12 @@ interface ButtonProps {
 
 class Button extends Block {
   constructor(props: ButtonProps) {
-    // Convert onClick to events prop for proper event handling
     const events = props.onClick ? { click: props.onClick } : {};
     super("button", { ...props, events });
   }
 
   protected init(): void {
     super.init();
-    // Set button attributes programmatically
     if (this._element) {
       if (this.props.type) {
         this._element.setAttribute('type', this.props.type);
